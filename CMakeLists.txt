@@ -2,12 +2,16 @@ cmake_minimum_required(VERSION 2.8.3)
 project(my_rviz_plugin)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-# add_compile_options(-std=c++11)
+#add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  rviz
+  message_generation
+  geometry_msgs
+  )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -99,11 +103,11 @@ find_package(catkin REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES my_rviz_plugin
-#  CATKIN_DEPENDS other_catkin_pkg
-#  DEPENDS system_lib
-)
+  INCLUDE_DIRS #include
+  LIBRARIES my_rviz_plugin
+  CATKIN_DEPENDS #
+  DEPENDS rviz
+  )
 
 ###########
 ## Build ##
@@ -112,9 +116,36 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
-# ${catkin_INCLUDE_DIRS}
+  src
+  # include
+  ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIR}
 )
+
+link_directories(${catkin_LIBRARY_DIRS})
+
+set(CMAKE_AUTOMOC ON)
+
+set(SOURCE_FILES
+  src/wrench_display.cpp
+  )
+
+add_library(my_rviz_plugin ${SOURCE_FILES})
+
+MESSAGE(WARNING "::::" ${catkin_LIBRARIES})
+MESSAGE(WARNING "::::" ${rviz_DEFAULT_PLUGIN_LIBRARIES})
+
+if(rviz_QT_VERSION VERSION_LESS "5")
+  message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt4 ${rviz_QT_VERSION} EXACT REQUIRED QtCore QtGui)
+  include(${QT_USE_FILE})
+  target_link_libraries(my_rviz_plugin ${QT_LIBRARIES} ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
+else()
+  message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
+  find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
+  target_link_libraries(my_rviz_plugin Qt5::Widgets ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
+endif()      
+add_definitions(-DQT_NO_KEYWORDS -g)
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -152,6 +183,20 @@ include_directories(
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+
+install(FILES plugin_description.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  )
+
+install(TARGETS my_rviz_plugin
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+  )  
+
+install(DIRECTORY ./src/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h")   
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
