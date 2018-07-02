@@ -1,6 +1,30 @@
 //from https://github.com/ros-visualization/rviz/blob/kinetic-devel/src/rviz/default_plugin/wrench_display.cpp
 
 /*
+Upstream Authors (2005-2009):
+
+    Ulisse Perusin <uli.peru@gmail.com>
+    Steven Garrity <sgarrity@silverorange.com>
+    Lapo Calamandrei <calamandrei@gmail.com>
+    Ryan Collier <rcollier@novell.com>
+    Rodney Dawes <dobey@novell.com>
+    Andreas Nilsson <nisses.mail@home.se>
+    Tuomas Kuosmanen <tigert@tigert.com>
+    Garrett LeSage <garrett@novell.com>
+    Jakub Steiner <jimmac@novell.com>
+
+Other icons and graphics contained in this package are released into the Public Domain as well.
+
+Authors (2012-2017):
+
+    David Gossow
+    Chad Rockey
+    Kei Okada
+    Julius Kammerl
+    Acorn Pooley
+
+Copyright notice for all icons and graphics in this package:
+
 Public Domain Dedication
 
 Copyright-Only Dedication (based on United States law) or Public Domain
