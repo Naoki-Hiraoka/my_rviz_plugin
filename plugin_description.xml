@@ -6,5 +6,13 @@
     <description>
     </description>
   </class>
+
+  <class name="my_rviz_plugin/WrenchStampedArray"
+  	 type="my_rviz_plugin::WrenchStampedArrayDisplay"
+  	 base_class_type="rviz::Display">
+    <description>
+    </description>
+  </class>
+
   
 </library>

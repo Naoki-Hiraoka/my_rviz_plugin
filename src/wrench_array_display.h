@@ -63,15 +63,17 @@ yet been invented or conceived.
 
  */
 
-#ifndef MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
-#define MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
+#ifndef MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
+#define MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
 
 #ifndef Q_MOC_RUN
 #include <boost/circular_buffer.hpp>
 #endif
 
-#include <geometry_msgs/WrenchStamped.h>
+#include <my_rviz_plugin/WrenchStampedArray.h>
 #include <rviz/message_filter_display.h>
+
+#include "wrench_display.h"
 
 namespace Ogre
 {
@@ -94,14 +96,14 @@ namespace rviz
 namespace my_rviz_plugin
 {
 
-class WrenchStampedDisplay: public rviz::MessageFilterDisplay<geometry_msgs::WrenchStamped>
+class WrenchStampedArrayDisplay: public rviz::MessageFilterDisplay<my_rviz_plugin::WrenchStampedArray>
 {
     Q_OBJECT
 public:
     // Constructor.  pluginlib::ClassLoader creates instances by calling
     // the default constructor, so make sure you have one.
-    WrenchStampedDisplay();
-    virtual ~WrenchStampedDisplay();
+    WrenchStampedArrayDisplay();
+    virtual ~WrenchStampedArrayDisplay();
 
 protected:
     // Overrides of public virtual functions from the Display class.
@@ -115,22 +117,19 @@ private Q_SLOTS:
 
 private:
   // Function to handle an incoming ROS message.
-  void processMessage( const geometry_msgs::WrenchStamped::ConstPtr& msg );
+  void processMessage( const my_rviz_plugin::WrenchStampedArray::ConstPtr& msg );
   
   // Storage for the list of visuals par each joint intem
   // Storage for the list of visuals.  It is a circular buffer where
   // data gets popped from the front (oldest) and pushed to the back (newest)
-  boost::circular_buffer<boost::shared_ptr<rviz::WrenchVisual> > visuals_;
+  boost::circular_buffer<boost::shared_ptr<std::vector<rviz::WrenchVisual> > > visuals_;
 
   // Property objects for user-editable properties.
   rviz::ColorProperty *force_color_property_, *torque_color_property_;
   rviz::FloatProperty *alpha_property_, *force_scale_property_, *torque_scale_property_, *width_property_;
   rviz::IntProperty *history_length_property_;
 };
-
-  bool validateFloats( const geometry_msgs::WrenchStamped& msg );
-  
-} // end namespace my_rviz_plugin
+} // end namespace rviz_plugin_tutorials
 
 #endif // MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
 

@@ -63,8 +63,8 @@ yet been invented or conceived.
 
  */
 
-#ifndef MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
-#define MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
+#ifndef MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
+#define MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
 
 #ifndef Q_MOC_RUN
 #include <boost/circular_buffer.hpp>
@@ -94,14 +94,14 @@ namespace rviz
 namespace my_rviz_plugin
 {
 
-class WrenchStampedDisplay: public rviz::MessageFilterDisplay<geometry_msgs::WrenchStamped>
+class WrenchStampedArrayDisplay: public rviz::MessageFilterDisplay<geometry_msgs::WrenchStamped>
 {
     Q_OBJECT
 public:
     // Constructor.  pluginlib::ClassLoader creates instances by calling
     // the default constructor, so make sure you have one.
-    WrenchStampedDisplay();
-    virtual ~WrenchStampedDisplay();
+    WrenchStampedArrayDisplay();
+    virtual ~WrenchStampedArrayDisplay();
 
 protected:
     // Overrides of public virtual functions from the Display class.
@@ -127,10 +127,7 @@ private:
   rviz::FloatProperty *alpha_property_, *force_scale_property_, *torque_scale_property_, *width_property_;
   rviz::IntProperty *history_length_property_;
 };
-
-  bool validateFloats( const geometry_msgs::WrenchStamped& msg );
-  
-} // end namespace my_rviz_plugin
+} // end namespace rviz_plugin_tutorials
 
 #endif // MY_RVIZ_PLUGIN_WRENCHSTAMPED_DISPLAY_H
 
