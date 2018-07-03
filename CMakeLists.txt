@@ -136,15 +136,35 @@ add_library(my_rviz_plugin ${SOURCE_FILES})
 #MESSAGE(WARNING "::::" ${catkin_LIBRARIES})
 #MESSAGE(WARNING "::::" ${rviz_DEFAULT_PLUGIN_LIBRARIES})
 
+if(NOT DEFINED OGRE_OV_LIBRARIES_ABS)
+  unset(OGRE_OV_LIBRARIES_ABS_TMP)
+  foreach(_lib ${OGRE_OV_LIBRARIES})
+    set(OGRE_OV_LIB_TAG "OGRE_OV_RVIZ_LIB_${_lib}")
+
+    find_library(${OGRE_OV_LIB_TAG}
+      NAMES ${_lib}
+      HINTS ${OGRE_OV_LIBRARY_DIRS}
+      PATHS ${OGRE_OV_LIBRARY_DIRS}
+      )
+
+    set(OGRE_OV_LIBRARIES_ABS_TMP ${OGRE_OV_LIBRARIES_ABS_TMP} ${${OGRE_OV_LIB_TAG}})
+  endforeach(_lib)
+
+  set(OGRE_OV_LIBRARIES_ABS ${OGRE_OV_LIBRARIES_ABS_TMP}
+    CACHE FILEPATH "Pathname of library ${_lib}")
+endif(NOT DEFINED OGRE_OV_LIBRARIES_ABS)
+
+
+
 if(rviz_QT_VERSION VERSION_LESS "5")
   message(STATUS "Using Qt4 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
-  find_package(Qt4 ${rviz_QT_VERSION} EXACT REQUIRED QtCore QtGui)
+  find_package(Qt4 ${rviz_QT_VERSION} EXACT REQUIRED QtCore QtGui QtOpenGL)
   include(${QT_USE_FILE})
-  target_link_libraries(my_rviz_plugin ${QT_LIBRARIES} ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
+  target_link_libraries(my_rviz_plugin ${QT_LIBRARIES} ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${Boost_LIBRARIES} ${OGRE_OV_LIBRARIES_ABS})
 else()
   message(STATUS "Using Qt5 based on the rviz_QT_VERSION: ${rviz_QT_VERSION}")
-  find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets)
-  target_link_libraries(my_rviz_plugin Qt5::Widgets ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES})
+  find_package(Qt5 ${rviz_QT_VERSION} EXACT REQUIRED Core Widgets OpenGL Widgets)
+  target_link_libraries(my_rviz_plugin Qt5::Widgets ${catkin_LIBRARIES} ${rviz_DEFAULT_PLUGIN_LIBRARIES} ${Boost_LIBRARIES} ${OGRE_OV_LIBRARIES_ABS})
 endif()      
 add_definitions(-DQT_NO_KEYWORDS -g)
 

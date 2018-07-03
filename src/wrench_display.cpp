@@ -163,7 +163,11 @@ void WrenchStampedDisplay::updateColorAndAlpha()
 // Set the number of past visuals to show.
 void WrenchStampedDisplay::updateHistoryLength()
 {
-    visuals_.rset_capacity(history_length_property_->getInt());
+  std::cerr<<">>UPDATEHISTORYLENGTH"<<std::endl;
+  //下の行を、visuals_のsizeが1以上のときに呼ぶと、警告なくrvizがcrashする。
+  //rviz_default_pluginでは発生しない。
+  visuals_.rset_capacity(history_length_property_->getInt());
+  std::cerr<<"<<UPDATEHISTORYLENGTH"<<std::endl;
 }
 
 bool validateFloats( const geometry_msgs::WrenchStamped& msg )
@@ -174,6 +178,7 @@ bool validateFloats( const geometry_msgs::WrenchStamped& msg )
 // This is our callback to handle an incoming message.
 void WrenchStampedDisplay::processMessage( const geometry_msgs::WrenchStamped::ConstPtr& msg )
 {
+  std::cerr<<">>PROCESSMESSAGE"<<std::endl;
     if( !validateFloats( *msg ))
     {
         setStatus( rviz::StatusProperty::Error, "Topic", "Message contained invalid floating point values (nans or infs)" );
@@ -230,6 +235,8 @@ void WrenchStampedDisplay::processMessage( const geometry_msgs::WrenchStamped::C
 
     // And send it to the end of the circular buffer
     visuals_.push_back(visual);
+
+    std::cerr<<"<<PROCESSMESSAGE"<<std::endl;
 }
 
 } // end namespace my_rviz_plugin

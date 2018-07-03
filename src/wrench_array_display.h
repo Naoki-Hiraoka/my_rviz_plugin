@@ -66,13 +66,15 @@ yet been invented or conceived.
 #ifndef MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
 #define MY_RVIZ_PLUGIN_WRENCHSTAMPEDARRAY_DISPLAY_H
 
-#ifndef Q_MOC_RUN
-#include <boost/circular_buffer.hpp>
-#endif
+//#ifndef Q_MOC_RUN
+//#include <boost/circular_buffer.hpp>
+//#endif
+#include <deque>
+
 
 #include <my_rviz_plugin/WrenchStampedArray.h>
 #include <rviz/message_filter_display.h>
-
+#include <thread>
 #include "wrench_display.h"
 
 namespace Ogre
@@ -122,7 +124,9 @@ private:
   // Storage for the list of visuals par each joint intem
   // Storage for the list of visuals.  It is a circular buffer where
   // data gets popped from the front (oldest) and pushed to the back (newest)
-  boost::circular_buffer<boost::shared_ptr<std::vector<rviz::WrenchVisual> > > visuals_;
+  //注意!! rviz::WrenchVisualはshared_prtの状態で扱うこと。解体する際に、rviz側でまだ利用中の場合に、突然プログラムが落ちる。
+  std::deque<boost::shared_ptr<std::vector<boost::shared_ptr<rviz::WrenchVisual> > > > visuals_;
+  
 
   // Property objects for user-editable properties.
   rviz::ColorProperty *force_color_property_, *torque_color_property_;
