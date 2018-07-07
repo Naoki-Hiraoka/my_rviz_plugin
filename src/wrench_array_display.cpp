@@ -166,13 +166,11 @@ void WrenchStampedArrayDisplay::updateColorAndAlpha()
 void WrenchStampedArrayDisplay::updateHistoryLength()
 {
   //visuals_.rset_capacity(history_length_property_->getInt());
-  std::cerr<<">>UPDATEHISTORYLENGTH"<<std::endl;
   if (visuals_.size()>history_length_property_->getInt()){
     for(int i=0;i<history_length_property_->getInt()-visuals_.size();i++){
       visuals_.pop_front();
     }
   }
-  std::cerr<<"<<UPDATEHISTORYLENGTH"<<std::endl;
 }
 
 // bool validateFloats( const geometry_msgs::WrenchStamped& msg )
@@ -183,17 +181,12 @@ void WrenchStampedArrayDisplay::updateHistoryLength()
 // This is our callback to handle an incoming message.
 void WrenchStampedArrayDisplay::processMessage( const my_rviz_plugin::WrenchStampedArray::ConstPtr& msg )
 {
-  std::cerr<<">>PROCESSMESSAGE"<<std::endl;
   boost::shared_ptr<std::vector<boost::shared_ptr<rviz::WrenchVisual> > > visuals;
   if( visuals_.size()>=history_length_property_->getInt() )
     {
-      std::cerr<<">>1"<<std::endl;
       visuals = visuals_.front();
-      std::cerr<<">>2"<<std::endl;
       visuals_.pop_front();
-      std::cerr<<">>3"<<std::endl;
       visuals->clear();
-      std::cerr<<">>4"<<std::endl;
     }
   else
     {
@@ -215,7 +208,8 @@ void WrenchStampedArrayDisplay::processMessage( const my_rviz_plugin::WrenchStam
                                                     msg->wrenchstampeds[i].header.stamp,
                                                     position, orientation ))
       {
-        ROS_DEBUG( "Error transforming from frame '%s' to frame '%s'",
+	//ROS_ERROR( "Error transforming from frame '%s' to frame '%s'",
+	ROS_DEBUG( "Error transforming from frame '%s' to frame '%s'",
                    msg->wrenchstampeds[i].header.frame_id.c_str(), qPrintable( fixed_frame_ ));
         continue;
       }
@@ -227,13 +221,11 @@ void WrenchStampedArrayDisplay::processMessage( const my_rviz_plugin::WrenchStam
     }
 
     boost::shared_ptr<rviz::WrenchVisual> visual{new rviz::WrenchVisual{context_->getSceneManager(), scene_node_ }};
-    std::cerr<<",,,,,,,,,,,,,,,,,,,,"<<std::endl;
     // Now set or update the contents of the chosen visual.
     visual->setWrench( msg->wrenchstampeds[i].wrench );
     //std::this_thread::sleep_for(std::chrono::seconds(3));
     visual->setFramePosition( position );
     visual->setFrameOrientation( orientation );
-    std::cerr<<"##################"<<std::endl;
     float alpha = alpha_property_->getFloat();
     float force_scale = force_scale_property_->getFloat();
     float torque_scale = torque_scale_property_->getFloat();
@@ -245,17 +237,12 @@ void WrenchStampedArrayDisplay::processMessage( const my_rviz_plugin::WrenchStam
     visual->setForceScale( force_scale );
     visual->setTorqueScale( torque_scale );
     visual->setWidth( width );
-    std::cerr<< force_color.r<< " "<<force_color.g<< " "<< force_color.b<< " "<<alpha << " "<<std::endl;
-    std::cerr <<force_scale<<std::endl;
-    std::cerr <<torque_scale<<std::endl;
-    std::cerr <<width<<std::endl;
     //visuals->push_back(std::move(visual));
     visuals->push_back(visual);
-    std::cerr<<"$$$$$$$$$$$$$$$"<<std::endl;
+    //std::cerr<<"$$$$$$$$$$$$$$$"<<std::endl;
   }
   // And send it to the end of the circular buffer
   visuals_.push_back(visuals);
-  std::cerr<<"<<PROCESSMESSAGE"<<std::endl;
 }
 
 } // end namespace my_rviz_plugin
